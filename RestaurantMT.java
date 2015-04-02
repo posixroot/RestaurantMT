@@ -80,29 +80,38 @@ public class RestaurantMT {
       arrList.set(i, dinerVector);
     }
 
+    System.out.println("Restaurant 6431 is now open!");
+
     //Initialize the Monitors
-    // TableMonitor tm = new TableMonitor();
-    // CookMonitor cm = new CookMonitor();
-    // MachineMonitor mm = new MachineMonitor();
+    TableMonitor tm = new TableMonitor(tables);
+    CookMonitor cm = new CookMonitor(cooks);
+    MachineMonitor mm = new MachineMonitor();
 
     //spawn cooks
-    // cm.spawnCooks(cooks);
+    Cook[] cookThread = new Cook[cooks];
+    for(int i=0;i<cooks;i++){
+      cookThread[i] = new Cook("Cook-"+(i+1), i, timeGranularity, mm);
+      cookThread[i].start();
+    }
 
     //spawn diners
     Timer timer = new Timer();
     Diner[] dinerThread = new Diner[diners];
     for(int i=0;i<diners;i++) {
-      dinerThread[i] = new Diner("Diner-"+(i+1), timeGranularity);
-      int[] attrs = (int[])arrList.get(3+i);
-      dinerThread[i].setAttributes(attrs, 4);
-      // dinerThread[i].setTableMonitor(tm);
-      // dinerThread[i].setCookMonitor(cm);
-      // dinerThread[i].start();
+      int[] attrs = (int[])arrList.get(i+3);
+      dinerThread[i] = new Diner("Diner-"+(i+1), timeGranularity, attrs, tm, cm);
       timer.schedule(dinerThread[i], attrs[0]*1000);
     }
 
-    timer.cancel();
+    //sleep to make sure all the Diners finish
+    sleep(200*timeGranularity*1000);
 
+    //End Cook threads
+    for(int i=0;i<cooks;i++){
+      cookThread[i].endShift();
+    }
+    //End Diner threads
+    timer.cancel();
   }
 
 }
