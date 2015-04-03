@@ -1,5 +1,4 @@
 
-
 class Cook extends Thread {
 
   volatile boolean cancel;
@@ -7,18 +6,16 @@ class Cook extends Thread {
   private Thread t;
   // private boolean cancel;
   // private boolean orderReady;
-  public String threadName;
+  private String threadName;
   private int id;
   MachineMonitor mm;
   private int timeGranularity;
   volatile int[] order;
   volatile String dName;
-  // volatile boolean done;
 
   public Cook(String threadName, int id, int timeGranularity, MachineMonitor mm){
     this.threadName = threadName;
     this.id = id;
-    // this.mm = new MachineMonitor();
     this.mm = mm;
     this.timeGranularity = timeGranularity;
     this.cancel = false;
@@ -67,7 +64,6 @@ class Cook extends Thread {
       if(dName!=null)
         System.out.println(threadName+": Order complete!");
       orderReady = false;
-
     }
     System.out.println(threadName+"'s shift ends.");
     return;
@@ -112,6 +108,10 @@ class Cook extends Thread {
       t = new Thread(this, threadName);
       t.start();
     }
+  }
+
+  public String getThreadName(){
+    return threadName;
   }
 
 }

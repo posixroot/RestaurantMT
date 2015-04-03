@@ -1,16 +1,15 @@
-import java.util.TimerTask;
 
-class Diner extends TimerTask {
+class Diner extends Thread {
 
-  Thread t;
+  private Thread t;
   private String threadName;
   private int timeGranularity;
-  int timeArrived;
-  int burgers;
-  int fries;
-  int coke;
-  TableMonitor tm;
-  CookMonitor cm;
+  private int timeArrived;
+  private int burgers;
+  private int fries;
+  private int coke;
+  private TableMonitor tm;
+  private CookMonitor cm;
 
   Diner(String threadName, int timeGranularity, int[] attr, TableMonitor tm, CookMonitor cm) {
     this.threadName = threadName;
@@ -19,30 +18,19 @@ class Diner extends TimerTask {
     this.burgers = attr[1];
     this.fries = attr[2];
     this.coke = attr[3];
-    // this.tm = new TableMonitor();
     this.tm = tm;
-    // this.cm = new CookMonitor();
     this.cm = cm;
   }
 
   public void run(){
-    // System.out.println("inside thread:"+threadName);
-    // int count =10;
-    // while(count>0){
-    //   System.out.println(threadName+": "+count--);
-    // }
     System.out.println(threadName+" arrived at "+timeArrived);
     long startTime = System.currentTimeMillis();
     int table = tm.getTable();
     System.out.println(threadName+" is seated at table-"+table);
-    // Cook cook = new Cook();
     Cook cook = cm.getCook();
-    System.out.println(threadName+" is assigned "+cook.threadName);
+    System.out.println(threadName+" is assigned "+cook.getThreadName());
     cook.executeOrder(burgers, fries, coke, threadName);
-    System.out.println(threadName+" asked for "+burgers+" Burger(s), "+fries+" Fries and "+coke+" coke & cook got "+cook.order[0]+" "+cook.order[1]);
-    // for(int i=0;i<2;i++){
-      // System.out.println(threadName+" says: "+tm.tablesAvailable);
-    // }
+    System.out.println(threadName+" asked for "+burgers+" Burger(s), "+fries+" Fries and "+coke+" coke");
     cook.serveFood();
     System.out.println(threadName+"'s food is served!");
     cm.putCook(cook);
@@ -62,6 +50,10 @@ class Diner extends TimerTask {
       t = new Thread(this, threadName);
       t.start();
     }
+  }
+
+  public Thread getThread(){
+    return t;
   }
 
 }

@@ -1,11 +1,10 @@
 
-
 class CookMonitor {
 
-  int cooksAvailable;
-  int maxCooks;
-  Cook[] cookObj;
-  int[] cooksBitMap;
+  private int cooksAvailable;
+  private int maxCooks;
+  private Cook[] cookObj;
+  private int[] cooksBitMap;
 
   public CookMonitor(Cook[] cookThread, int cooks) {
     this.cooksAvailable = cooks;
@@ -18,10 +17,6 @@ class CookMonitor {
     for(int i=0;i<cooks;i++){
       cooksBitMap[i] = 0;
     }
-    // for(int i=0;i<cooks;i++){
-    //   System.out.println(cookObj[i].threadName);
-    // }
-
   }
 
   synchronized Cook getCook(){
@@ -42,21 +37,8 @@ class CookMonitor {
     }
     cooksBitMap[index]=1;
     cooksAvailable--;
-    // int index = getFreeCookIndex();
     return cookObj[index];
   }
-
-  // int getFreeCookIndex(){
-  //   int index=-1;
-  //   for(int i=0;i<maxCooks;i++){
-  //     if(cooksBitMap[i]==0){
-  //       cooksBitMap[i] = 1;
-  //       index = i;
-  //       break;
-  //     }
-  //   }
-  //   return index;
-  // }
 
   synchronized void putCook(Cook doneCook) {
     int index = -1;

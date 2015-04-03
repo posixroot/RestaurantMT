@@ -1,10 +1,9 @@
 
-
 class MachineMonitor {
 
-  boolean burgerMachine = true;
-  boolean friesMachine = true;
-  boolean cokeMachine = true;
+  private boolean burgerMachine = true;
+  private boolean friesMachine = true;
+  private boolean cokeMachine = true;
 
   synchronized String getMachine(int perm){
     if(perm==7){
