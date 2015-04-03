@@ -18,7 +18,7 @@ public class RestaurantMT {
     int diners = -1;
     int cooks = -1;
     int tables = -1;
-    int timeGranularity = 10;
+    int timeGranularity = 1;
     ArrayList<Object> arrList = new ArrayList<Object>();
 
     try(BufferedReader br = new BufferedReader(new FileReader(filename))) {
@@ -69,10 +69,10 @@ public class RestaurantMT {
         System.out.println("The diner vector needs to be of length 4");
         System.exit(0);
       }
-      if(dinerVector[0]>120||dinerVector[0]<0){
-        System.out.println("The diner vector needs to be of length 4");
-        System.exit(0);
-      }
+      // if(dinerVector[0]>120||dinerVector[0]<0){
+      //   System.out.println("The diners need to arrive in the interval between 0 and 120");
+      //   System.exit(0);
+      // }
       if(dinerVector[1]<1 || dinerVector[2]<0 || dinerVector[3]<0 || dinerVector[3]>1) {
         System.out.println("Please check the order bounds. Burgers:1 or higher, Fries: 0 or higher, Coke: 0 or 1.");
         System.exit(0);
@@ -84,8 +84,8 @@ public class RestaurantMT {
 
     //Initialize the Monitors
     TableMonitor tm = new TableMonitor(tables);
-    CookMonitor cm = new CookMonitor(cooks);
     MachineMonitor mm = new MachineMonitor();
+
 
     //spawn cooks
     Cook[] cookThread = new Cook[cooks];
@@ -93,6 +93,7 @@ public class RestaurantMT {
       cookThread[i] = new Cook("Cook-"+(i+1), i, timeGranularity, mm);
       cookThread[i].start();
     }
+    CookMonitor cm = new CookMonitor(cookThread, cooks);
 
     //spawn diners
     Timer timer = new Timer();
@@ -100,7 +101,8 @@ public class RestaurantMT {
     for(int i=0;i<diners;i++) {
       int[] attrs = (int[])arrList.get(i+3);
       dinerThread[i] = new Diner("Diner-"+(i+1), timeGranularity, attrs, tm, cm);
-      timer.schedule(dinerThread[i], attrs[0]*1000);
+      if(attrs[0]<=120)
+        timer.schedule(dinerThread[i], attrs[0]*1000);
     }
 
     //sleep to make sure all the Diners finish

@@ -2,8 +2,10 @@
 
 class Cook extends Thread {
 
-  volatile bool cancel;
-  volatile bool orderReady;
+  // volatile boolean cancel;
+  // volatile boolean orderReady;
+  private boolean cancel;
+  private boolean orderReady;
   private String threadName;
   private int id;
   private MachineMonitor mm;
@@ -15,32 +17,38 @@ class Cook extends Thread {
     this.id = id;
     this.mm = mm;
     this.timeGranularity = timeGranularity;
-    cancel = False;
-    orderReady = False;
-    order = new int[]{0,0,0};
+    this.cancel = false;
+    this.orderReady = false;
+    this.order = new int[]{0,0,0};
   }
 
   public void run() {
     while(!cancel){
       while(!orderReady);
-      orderReady = False;
+      orderReady = false;
+      System.out.println(threadName+" processing order");
       int resourceSum = order[0]+order[1]+order[2];
       int perm = calculateNeed();
       while(resourceSum){
         String machine = mm.getMachine(perm);
         if(machine.equals("burger")){
+          System.out.println(threadName+" making Burger");
           sleep(5*timeGranularity*1000);
           order[0]--;
         }else if (machine.equals("fries")) {
-          sleep(2*timeGranularity*1000);
+          System.out.println(threadName+" making Fries");
+          sleep(3*timeGranularity*1000);
           order[1]--;
         }else if (machine.equals("coke")){
+          System.out.println(threadName+" making Coke");
           sleep(1*timeGranularity*1000);
           order[2]--;
         }
+        mm.putMachine(machine);
         resourceSum = order[0]+order[1]+order[2];
         perm = calculateNeed();
       }
+
     }
     return;
   }
@@ -56,19 +64,19 @@ class Cook extends Thread {
     return perm;
   }
 
-  void takeOrder(int burgers, int fries, int coke){
+  void executeOrder(int burgers, int fries, int coke){
     order[0] = burgers;
     order[1] = fries;
     order[2] = coke;
-    orderReady = True;
+    orderReady = true;
   }
 
   void endShift(){
     order[0] = 0;
     order[1] = 0;
     order[2] = 0;
-    cancel = True;
-    orderReady = True;
+    cancel = true;
+    orderReady = true;
   }
 
   public void start(){
