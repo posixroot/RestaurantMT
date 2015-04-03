@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Timer;
+import java.util.LinkedHashMap;
 
 public class RestaurantMT {
 
@@ -18,7 +18,7 @@ public class RestaurantMT {
     int diners = -1;
     int cooks = -1;
     int tables = -1;
-    int timeGranularity = 1;
+    int timeGranularity = 1000;
     ArrayList<Object> arrList = new ArrayList<Object>();
 
     try(BufferedReader br = new BufferedReader(new FileReader(filename))) {
@@ -96,24 +96,39 @@ public class RestaurantMT {
     CookMonitor cm = new CookMonitor(cookThread, cooks);
 
     //spawn diners
-    Timer timer = new Timer();
     Diner[] dinerThread = new Diner[diners];
+    LinkedHashMap<Integer, ArrayList<Diner>> lhm = new LinkedHashMap<Integer, ArrayList<Diner>>();
     for(int i=0;i<diners;i++) {
       int[] attrs = (int[])arrList.get(i+3);
       dinerThread[i] = new Diner("Diner-"+(i+1), timeGranularity, attrs, tm, cm);
-      if(attrs[0]<=120)
-        timer.schedule(dinerThread[i], attrs[0]*1000);
+      if(!lhm.containsKey(attrs[0]))
+        lhm.put(attrs[0], new ArrayList<Diner>());
+      lhm.get(attrs[0]).add(dinerThread[i]);
+    }
+
+    for(int i=0; i<120; i++){
+      if(lhm.containsKey(i)){
+        for(Diner dt : lhm.get(i))
+          dt.start();
+      }
+      try{
+        Thread.sleep(1*timeGranularity);
+      }catch(InterruptedException e){
+        e.printStackTrace();
+      }
     }
 
     //sleep to make sure all the Diners finish
-    sleep(200*timeGranularity*1000);
+    try{
+      Thread.sleep(200*timeGranularity);
+    }catch(InterruptedException e){
+      System.out.println("Main Thread got interrupted!");
+    }
 
     //End Cook threads
     for(int i=0;i<cooks;i++){
       cookThread[i].endShift();
     }
-    //End Diner threads
-    timer.cancel();
   }
 
 }

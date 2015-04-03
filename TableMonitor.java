@@ -2,9 +2,9 @@
 
 class TableMonitor {
 
-  private int tablesAvailable;
-  private int maxTables;
-  private int[] table;
+  int tablesAvailable;
+  int maxTables;
+  int[] table;
 
   public TableMonitor(int tables){
     tablesAvailable = tables;
@@ -16,20 +16,37 @@ class TableMonitor {
   }
 
   synchronized int getTable(){
-    while(tablesAvailable==0) wait();
+    while(tablesAvailable==0){
+      try{
+        wait();
+      }catch(InterruptedException e){
+        e.printStackTrace();
+      }
+    }
 
-    tablesAvailable--;
-    return (getFreeTableIndex()+1);
-  }
-
-  int getFreeTableIndex(){
+    int index = -1;
     for(int i=0; i<maxTables; i++){
       if(table[i]==0){
         table[i] = 1;
-        return i;
+        index = i;
+        break;
       }
     }
-    return -1; //If you are here something went wrong with the Monitor
+
+    tablesAvailable--;
+    return (index+1);
+  }
+
+  int getFreeTableIndex(){
+    int index = -1;
+    for(int i=0; i<maxTables; i++){
+      if(table[i]==0){
+        table[i] = 1;
+        index = i;
+        break;
+      }
+    }
+    return index;
   }
 
   synchronized void putTable(int t){

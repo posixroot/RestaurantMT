@@ -5,12 +5,12 @@ class Diner extends TimerTask {
   private Thread t;
   private String threadName;
   private int timeGranularity;
-  private int timeArrived;
-  private int burgers;
-  private int fries;
-  private int coke;
-  private TableMonitor tm;
-  private CookMonitor cm;
+  int timeArrived;
+  int burgers;
+  int fries;
+  int coke;
+  TableMonitor tm;
+  CookMonitor cm;
 
   Diner(String threadName, int timeGranularity, int[] attr, TableMonitor tm, CookMonitor cm) {
     this.threadName = threadName;
@@ -19,7 +19,9 @@ class Diner extends TimerTask {
     this.burgers = attr[1];
     this.fries = attr[2];
     this.coke = attr[3];
+    // this.tm = new TableMonitor();
     this.tm = tm;
+    // this.cm = new CookMonitor();
     this.cm = cm;
   }
 
@@ -32,14 +34,26 @@ class Diner extends TimerTask {
     System.out.println(threadName+" arrived");
     long startTime = System.currentTimeMillis();
     int table = tm.getTable();
+    System.out.println(threadName+" assigned table "+table);
+    // Cook cook = new Cook();
     Cook cook = cm.getCook();
+    System.out.println(threadName+" is assigned "+cook.threadName);
+
     System.out.println(threadName+" placed order");
     cook.executeOrder(burgers, fries, coke);
+    System.out.println(threadName+" asked for "+burgers+" "+fries+" and cook got "+cook.order[0]+" "+cook.order[1]);
+    for(int i=0;i<2;i++){
+      System.out.println(threadName+" says: "+tm.tablesAvailable);
+    }
     cm.putCook(cook);
-    sleep(30*this.timeGranularity*1000);
+    try{
+      Thread.sleep(30*this.timeGranularity);
+    }catch(InterruptedException e){
+      e.printStackTrace();
+    }
     tm.putTable(table);
     long endTime = System.currentTimeMillis();
-    System.out.println(threadName+" left at "+((timeArrived*timeGranularity)+((endTime-startTime)/(1000*timeGranularity))));
+    System.out.println(threadName+" left at "+((timeArrived)+((endTime-startTime)/timeGranularity)));
   }
 
   public void start(){

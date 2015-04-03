@@ -2,10 +2,10 @@
 
 class CookMonitor {
 
-  private int cooksAvailable;
-  private int maxCooks;
-  private Cook[] cookObj;
-  private int[] cooksBitMap;
+  int cooksAvailable;
+  int maxCooks;
+  Cook[] cookObj;
+  int[] cooksBitMap;
 
   public CookMonitor(Cook[] cookThread, int cooks) {
     this.cooksAvailable = cooks;
@@ -18,37 +18,50 @@ class CookMonitor {
     for(int i=0;i<cooks;i++){
       cooksBitMap[i] = 0;
     }
+    // for(int i=0;i<cooks;i++){
+    //   System.out.println(cookObj[i].threadName);
+    // }
+
   }
 
-  // void spawnCooks(){
-  //   cookObj = new Cook[cooks];
-  //   for(int i=0; i<maxCooks; i++) {
-  //     cookObj[i] = new Cook();
-  //     cookObj[i].start();
-  //   }
-  // }
-
   synchronized Cook getCook(){
-    while(cooksAvailable==0) wait();
+    while(cooksAvailable==0){
+      try{
+        wait();
+      }catch(InterruptedException e){
+        e.printStackTrace();
+      }
+    }
+
+    int index=-1;
+    for(int i=0;i<maxCooks;i++){
+      if(cooksBitMap[i]==0){
+        cooksBitMap[i] = 1;
+        index = i;
+        break;
+      }
+    }
 
     cooksAvailable--;
-    int index = getFreeCookIndex();
+    // int index = getFreeCookIndex();
     return cookObj[index];
   }
 
   int getFreeCookIndex(){
+    int index=-1;
     for(int i=0;i<maxCooks;i++){
       if(cooksBitMap[i]==0){
         cooksBitMap[i] = 1;
-        return i;
+        index = i;
+        break;
       }
     }
-    return -1;
+    return index;
   }
 
   synchronized void putCook(Cook doneCook) {
     for(int i=0;i<maxCooks;i++){
-      if(cookObj[i]==donecook){
+      if(cookObj[i]==doneCook){
         cooksBitMap[i] = 0;
         cooksAvailable++;
         break;

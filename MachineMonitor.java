@@ -2,32 +2,67 @@
 
 class MachineMonitor {
 
-  private boolean burgerMachine = false;
-  private boolean friesMachine = false;
-  private boolean cokeMachine = false;
+  boolean burgerMachine = true;
+  boolean friesMachine = true;
+  boolean cokeMachine = true;
 
   synchronized String getMachine(int perm){
     if(perm==7){
-      while(!burgerMachine && !friesMachine && !cokeMachine)
-        wait();
+      while(!burgerMachine && !friesMachine && !cokeMachine){
+        try{
+          wait();
+        }catch(InterruptedException e){
+          e.printStackTrace();
+        }
+      }
     }else if(perm==6){
-      while(!burgerMachine && !friesMachine)
-        wait();
+      while(!burgerMachine && !friesMachine){
+        try{
+          wait();
+        }catch(InterruptedException e){
+          e.printStackTrace();
+        }
+      }
     }else if(perm==5){
-      while(!burgerMachine && !cokeMachine)
-        wait();
+      while(!burgerMachine && !cokeMachine){
+        try{
+          wait();
+        }catch(InterruptedException e){
+          e.printStackTrace();
+        }
+      }
     }else if(perm==4){
-      while(!burgerMachine)
-        wait();
+      while(!burgerMachine){
+        try{
+          wait();
+        }catch(InterruptedException e){
+          e.printStackTrace();
+        }
+      }
     }else if(perm==3){
-      while(!friesMachine && !cokeMachine)
-        wait();
+      while(!friesMachine && !cokeMachine){
+        try{
+          wait();
+        }catch(InterruptedException e){
+          e.printStackTrace();
+        }
+      }
     }else if(perm==2){
-      while(!friesMachine)
-        wait();
+      while(!friesMachine){
+        try{
+          wait();
+        }catch(InterruptedException e){
+          e.printStackTrace();
+        }
+      }
     }else if(perm==1){
-      while(!cokeMachine)
-        wait();
+      while(!cokeMachine){
+        try{
+          wait();
+        }catch(InterruptedException e){
+          e.printStackTrace();
+        }
+      }
     }else if(perm==0){
       return "default";
     }

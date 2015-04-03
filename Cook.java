@@ -2,19 +2,21 @@
 
 class Cook extends Thread {
 
-  // volatile boolean cancel;
-  // volatile boolean orderReady;
-  private boolean cancel;
-  private boolean orderReady;
-  private String threadName;
+  volatile boolean cancel;
+  volatile boolean orderReady;
+  private Thread t;
+  // private boolean cancel;
+  // private boolean orderReady;
+  public String threadName;
   private int id;
-  private MachineMonitor mm;
+  MachineMonitor mm;
   private int timeGranularity;
-  private int[] order;
+  volatile int[] order;
 
   public Cook(String threadName, int id, int timeGranularity, MachineMonitor mm){
     this.threadName = threadName;
     this.id = id;
+    // this.mm = new MachineMonitor();
     this.mm = mm;
     this.timeGranularity = timeGranularity;
     this.cancel = false;
@@ -25,29 +27,41 @@ class Cook extends Thread {
   public void run() {
     while(!cancel){
       while(!orderReady);
-      orderReady = false;
       System.out.println(threadName+" processing order");
       int resourceSum = order[0]+order[1]+order[2];
       int perm = calculateNeed();
-      while(resourceSum){
+      while(resourceSum>0){
         String machine = mm.getMachine(perm);
         if(machine.equals("burger")){
           System.out.println(threadName+" making Burger");
-          sleep(5*timeGranularity*1000);
+          try{
+            Thread.sleep(5*timeGranularity);
+          }catch(InterruptedException e){
+            e.printStackTrace();
+          }
           order[0]--;
         }else if (machine.equals("fries")) {
           System.out.println(threadName+" making Fries");
-          sleep(3*timeGranularity*1000);
+          try{
+            Thread.sleep(3*timeGranularity);
+          }catch(InterruptedException e){
+            e.printStackTrace();
+          }
           order[1]--;
         }else if (machine.equals("coke")){
           System.out.println(threadName+" making Coke");
-          sleep(1*timeGranularity*1000);
+          try{
+            Thread.sleep(1*timeGranularity);
+          }catch(InterruptedException e){
+            e.printStackTrace();
+          }
           order[2]--;
         }
         mm.putMachine(machine);
         resourceSum = order[0]+order[1]+order[2];
         perm = calculateNeed();
       }
+      orderReady = false;
 
     }
     return;
@@ -55,11 +69,11 @@ class Cook extends Thread {
 
   int calculateNeed(){
     int perm = 0;
-    if (order[0])
+    if (order[0]>0)
       perm += 4;
-    if(order[1])
+    if(order[1]>0)
       perm += 2;
-    if(order[2])
+    if(order[2]>0)
       perm += 1;
     return perm;
   }
