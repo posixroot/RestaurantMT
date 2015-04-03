@@ -36,37 +36,38 @@ class CookMonitor {
     int index=-1;
     for(int i=0;i<maxCooks;i++){
       if(cooksBitMap[i]==0){
-        cooksBitMap[i] = 1;
         index = i;
         break;
       }
     }
-
+    cooksBitMap[index]=1;
     cooksAvailable--;
     // int index = getFreeCookIndex();
     return cookObj[index];
   }
 
-  int getFreeCookIndex(){
-    int index=-1;
+  // int getFreeCookIndex(){
+  //   int index=-1;
+  //   for(int i=0;i<maxCooks;i++){
+  //     if(cooksBitMap[i]==0){
+  //       cooksBitMap[i] = 1;
+  //       index = i;
+  //       break;
+  //     }
+  //   }
+  //   return index;
+  // }
+
+  synchronized void putCook(Cook doneCook) {
+    int index = -1;
     for(int i=0;i<maxCooks;i++){
-      if(cooksBitMap[i]==0){
-        cooksBitMap[i] = 1;
+      if(cookObj[i]==doneCook){
         index = i;
         break;
       }
     }
-    return index;
-  }
-
-  synchronized void putCook(Cook doneCook) {
-    for(int i=0;i<maxCooks;i++){
-      if(cookObj[i]==doneCook){
-        cooksBitMap[i] = 0;
-        cooksAvailable++;
-        break;
-      }
-    }
+    cooksBitMap[index] = 0;
+    cooksAvailable++;
     notifyAll();
   }
 }

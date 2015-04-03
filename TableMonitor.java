@@ -27,31 +27,30 @@ class TableMonitor {
     int index = -1;
     for(int i=0; i<maxTables; i++){
       if(table[i]==0){
-        table[i] = 1;
         index = i;
         break;
       }
     }
-
+    table[index] = 1;
     tablesAvailable--;
     return (index+1);
   }
 
-  int getFreeTableIndex(){
-    int index = -1;
-    for(int i=0; i<maxTables; i++){
-      if(table[i]==0){
-        table[i] = 1;
-        index = i;
-        break;
-      }
-    }
-    return index;
-  }
+  // int getFreeTableIndex(){
+  //   int index = -1;
+  //   for(int i=0; i<maxTables; i++){
+  //     if(table[i]==0){
+  //       table[i] = 1;
+  //       index = i;
+  //       break;
+  //     }
+  //   }
+  //   return index;
+  // }
 
   synchronized void putTable(int t){
-    tablesAvailable++;
     table[t-1] = 0;
+    tablesAvailable++;
     notifyAll();
   }
 

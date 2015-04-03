@@ -2,7 +2,7 @@ import java.util.TimerTask;
 
 class Diner extends TimerTask {
 
-  private Thread t;
+  Thread t;
   private String threadName;
   private int timeGranularity;
   int timeArrived;
@@ -31,20 +31,20 @@ class Diner extends TimerTask {
     // while(count>0){
     //   System.out.println(threadName+": "+count--);
     // }
-    System.out.println(threadName+" arrived");
+    System.out.println(threadName+" arrived at "+timeArrived);
     long startTime = System.currentTimeMillis();
     int table = tm.getTable();
-    System.out.println(threadName+" assigned table "+table);
+    System.out.println(threadName+" is seated at table-"+table);
     // Cook cook = new Cook();
     Cook cook = cm.getCook();
     System.out.println(threadName+" is assigned "+cook.threadName);
-
-    System.out.println(threadName+" placed order");
-    cook.executeOrder(burgers, fries, coke);
-    System.out.println(threadName+" asked for "+burgers+" "+fries+" and cook got "+cook.order[0]+" "+cook.order[1]);
-    for(int i=0;i<2;i++){
-      System.out.println(threadName+" says: "+tm.tablesAvailable);
-    }
+    cook.executeOrder(burgers, fries, coke, threadName);
+    System.out.println(threadName+" asked for "+burgers+" Burger(s), "+fries+" Fries and "+coke+" coke & cook got "+cook.order[0]+" "+cook.order[1]);
+    // for(int i=0;i<2;i++){
+      // System.out.println(threadName+" says: "+tm.tablesAvailable);
+    // }
+    cook.serveFood();
+    System.out.println(threadName+"'s food is served!");
     cm.putCook(cook);
     try{
       Thread.sleep(30*this.timeGranularity);

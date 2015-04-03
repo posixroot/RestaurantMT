@@ -117,12 +117,22 @@ public class RestaurantMT {
         e.printStackTrace();
       }
     }
+    System.out.println("Restaurant Closed!");
 
     //sleep to make sure all the Diners finish
-    try{
-      Thread.sleep(200*timeGranularity);
-    }catch(InterruptedException e){
-      System.out.println("Main Thread got interrupted!");
+    // try{
+    //   Thread.sleep(200*timeGranularity);
+    // }catch(InterruptedException e){
+    //   System.out.println("Main Thread got interrupted!");
+    // }
+    for(int i=0;i<diners;i++){
+      if(dinerThread[i].t.isAlive()){
+        try{
+          dinerThread[i].t.join();
+        }catch(InterruptedException e){
+          e.printStackTrace();
+        }
+      }
     }
 
     //End Cook threads

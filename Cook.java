@@ -12,6 +12,8 @@ class Cook extends Thread {
   MachineMonitor mm;
   private int timeGranularity;
   volatile int[] order;
+  volatile String dName;
+  // volatile boolean done;
 
   public Cook(String threadName, int id, int timeGranularity, MachineMonitor mm){
     this.threadName = threadName;
@@ -27,7 +29,8 @@ class Cook extends Thread {
   public void run() {
     while(!cancel){
       while(!orderReady);
-      System.out.println(threadName+" processing order");
+      if(dName!=null)
+        System.out.println(threadName+" processing "+dName+"'s order");
       int resourceSum = order[0]+order[1]+order[2];
       int perm = calculateNeed();
       while(resourceSum>0){
@@ -61,9 +64,12 @@ class Cook extends Thread {
         resourceSum = order[0]+order[1]+order[2];
         perm = calculateNeed();
       }
+      if(dName!=null)
+        System.out.println(threadName+": Order complete!");
       orderReady = false;
 
     }
+    System.out.println(threadName+"'s shift ends.");
     return;
   }
 
@@ -78,10 +84,16 @@ class Cook extends Thread {
     return perm;
   }
 
-  void executeOrder(int burgers, int fries, int coke){
+  void serveFood(){
+    while(orderReady);
+    return;
+  }
+
+  void executeOrder(int burgers, int fries, int coke, String dinerName){
     order[0] = burgers;
     order[1] = fries;
     order[2] = coke;
+    dName = dinerName;
     orderReady = true;
   }
 
@@ -89,6 +101,7 @@ class Cook extends Thread {
     order[0] = 0;
     order[1] = 0;
     order[2] = 0;
+    dName=null;
     cancel = true;
     orderReady = true;
   }
