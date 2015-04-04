@@ -1,17 +1,15 @@
 
 class Cook extends Thread {
 
-  volatile boolean cancel;
-  volatile boolean orderReady;
+  private volatile boolean orderReady;
   private Thread t;
-  // private boolean cancel;
-  // private boolean orderReady;
+  private boolean cancel;
   private String threadName;
   private int id;
-  MachineMonitor mm;
+  private MachineMonitor mm;
   private int timeGranularity;
-  volatile int[] order;
-  volatile String dName;
+  private int[] order;
+  private String dName;
 
   public Cook(String threadName, int id, int timeGranularity, MachineMonitor mm){
     this.threadName = threadName;
