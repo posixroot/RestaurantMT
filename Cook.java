@@ -3,7 +3,7 @@ class Cook extends Thread {
 
   private volatile boolean orderReady;
   private Thread t;
-  private boolean cancel;
+  private volatile boolean cancel;
   private String threadName;
   private int id;
   private MachineMonitor mm;

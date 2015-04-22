@@ -1,0 +1,16 @@
+Advanced OS  -  Project README
+
+By: Kiran Maddipati 
+OSUID: 200405214
+
+1. Compile the main class(RestaurantMT.java) using : javac RestaurantMT.java
+   (All other dependending classes also should be compiled automatically)
+
+2. Other than the main class, there are 2 classes (one for Diners and one for Cooks) and 3 Monitor classes (TableMonitor, CookMonitor and MachineMonitor) each responsible for maintaining synchronization among other classes.
+
+3. Once Compiled, to run, use : java RestaurantMT <input-file-name> 
+
+4. The Test-data-sets are also attached in the zip.
+
+
+
