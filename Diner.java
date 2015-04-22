@@ -29,11 +29,11 @@ class Diner extends Thread {
     System.out.println(threadName+" is seated at table-"+table);
     Cook cook = cm.getCook();
     System.out.println(threadName+" is assigned "+cook.getThreadName());
-    cook.executeOrder(burgers, fries, coke, threadName);
     System.out.println(threadName+" asked for "+burgers+" Burger(s), "+fries+" Fries and "+coke+" coke");
+    cook.executeOrder(burgers, fries, coke, threadName);
     cook.serveFood();
-    System.out.println(threadName+"'s food is served!");
     cm.putCook(cook);
+    System.out.println(threadName+"'s food is served!");
     try{
       Thread.sleep(30*this.timeGranularity);
     }catch(InterruptedException e){

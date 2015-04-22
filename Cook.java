@@ -67,6 +67,7 @@ class Cook extends Thread {
     return;
   }
 
+  //idea similar to unix rwx permissions
   int calculateNeed(){
     int perm = 0;
     if (order[0]>0)
